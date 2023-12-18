@@ -1,0 +1,16 @@
+T__0=1
+T__1=2
+T__2=3
+T__3=4
+T__4=5
+OPEN=6
+CLOSE=7
+ATOM=8
+WS=9
+'jadi'=1
+'plis tambah'=2
+'plis kurang'=3
+'plis kali'=4
+'plis bagi'=5
+'plis buka'=6
+'plis tutup'=7

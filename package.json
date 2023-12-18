@@ -12,11 +12,14 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
+		"@skeletonlabs/skeleton": "^2.6.0",
+		"@skeletonlabs/tw-plugin": "^0.3.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/lodash": "^4.14.202",
+		"antlr4ts-cli": "^0.5.0-alpha.4",
 		"autoprefixer": "^10.4.16",
-		"daisyui": "^4.4.20",
 		"postcss": "^8.4.32",
 		"postcss-load-config": "^5.0.2",
 		"prettier": "^3.1.1",
@@ -32,5 +35,13 @@
 	"type": "module",
 	"volta": {
 		"node": "18.19.0"
+	},
+	"dependencies": {
+		"@jcubic/lips": "^1.0.0-beta.16",
+		"antlr4ts": "^0.5.0-alpha.4",
+		"highlight.js": "^11.9.0",
+		"jaksel-lisp": "Tx-ID/ct-antlr#main",
+		"lodash": "^4.17.21",
+		"zod": "^3.22.4"
 	}
 }
