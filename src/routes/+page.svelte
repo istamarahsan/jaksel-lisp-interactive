@@ -67,7 +67,6 @@
 					})
 		)
 		.then((result) => {
-			console.log(result);
 			execResult = result;
 			return result;
 		});
