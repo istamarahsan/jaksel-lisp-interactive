@@ -22,6 +22,14 @@
 	storeHighlightJs.set(hljs);
 
 	let input = '';
+	let compileResult = {
+		success: true,
+		content: ''
+	};
+	let execResult = {
+		success: true,
+		value: ''
+	};
 	$: jakselCompileResultPromise = fetch('/compile', {
 		method: 'POST',
 		body: JSON.stringify({ src: input }),
@@ -30,17 +38,39 @@
 		}
 	})
 		.then((res) => res.json())
-		.then((data) =>
-			z
+		.then((data) => {
+			var parsed = z
 				.union([
 					z.object({ success: z.literal(true), content: z.string() }),
 					z.object({ success: z.literal(false), error: z.string() })
 				])
-				.parse(data)
-		);
-	$: lispExecPromise = jakselCompileResultPromise.then((result) =>
-		result.success ? lips.exec(result.content) : Promise.resolve('')
-	);
+				.parse(data);
+			compileResult = parsed;
+			return parsed;
+		});
+	$: lispExecPromise = jakselCompileResultPromise
+		.then((result) =>
+			result.success
+				? lips
+						.exec(result.content)
+						.then((value) => ({
+							success: true,
+							value
+						}))
+						.catch((error) => ({
+							success: false,
+							error: error
+						}))
+				: Promise.resolve({
+						success: false,
+						error: result.error
+					})
+		)
+		.then((result) => {
+			console.log(result);
+			execResult = result;
+			return result;
+		});
 	onMount(() => {
 		input = init;
 	});
@@ -79,33 +109,21 @@
 				<div id="eval" class="flex flex-col items-center gap-2 p-1">
 					<h2 class="text-2xl">Output:</h2>
 					<div class="flex h-[100px] flex-grow items-center justify-center">
-						{#await jakselCompileResultPromise}
-							<span class="text-6xl">...</span>
-						{:then jakselCompileResult}
-							{#if jakselCompileResult.success}
-								{#await lispExecPromise}
-									<span class="text-6xl">...</span>
-								{:then result}
-									<span class="text-6xl">{result}</span>
-								{:catch err}
-									<span class="text-sm">{err.message ? err.message : err}</span>
-								{/await}
-							{:else}
-								<span class="text-sm">{jakselCompileResult.error}</span>
-							{/if}
-						{/await}
+						{#if execResult.success}
+							<span class="text-6xl">{execResult.value}</span>
+						{:else}
+							<span class="text-sm">{execResult.error}</span>
+						{/if}
 					</div>
 				</div>
 				<hr class="my-4 w-full !border-t-4" />
 				<div id="lisp" class="flex w-full flex-grow flex-col items-center gap-5 p-1">
 					<h2 class="text-2xl">Compiled LISP</h2>
-					{#await jakselCompileResultPromise then jakselCompileResult}
-						<CodeBlock
-							class="h-full min-h-[128px] w-full flex-grow"
-							language="scheme"
-							code={jakselCompileResult.success ? jakselCompileResult.content : ''}
-						></CodeBlock>
-					{/await}
+					<CodeBlock
+						class="h-full min-h-[128px] w-full flex-grow"
+						language="scheme"
+						code={compileResult.success ? compileResult.content : ' '}
+					></CodeBlock>
 				</div>
 			</div>
 		</div>
