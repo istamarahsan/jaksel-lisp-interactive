@@ -21,6 +21,7 @@
 	hljs.registerLanguage('scheme', scheme);
 	storeHighlightJs.set(hljs);
 
+	let rawInput = '';
 	let input = '';
 	let compileResult = {
 		success: true,
@@ -70,16 +71,58 @@
 			execResult = result;
 			return result;
 		});
+	function setInput(str) {
+		rawInput = str;
+		input = str;
+	}
 	onMount(() => {
-		input = init;
+		setInput(init);
 	});
 </script>
 
 <div id="page" class="mx-auto max-w-4xl p-10">
-	<div class="flex flex-col items-center gap-10">
+	<div class="flex flex-col items-center gap-5">
 		<div class="flex flex-col gap-4 text-center">
 			<h1 class="text-6xl">Jaksel LISP</h1>
-			<small class="text-xl">Interactive Compiler</small>
+			<h2 class="text-xl">Interactive Compiler</h2>
+			<small class="text-md"
+				><a href="https://github.com/Tx-ID/ct-antlr" target="_blank" class="underline"
+					><strong>Jaksel LISP</strong></a
+				>
+				is a very simple lisp that compiles to Scheme. Powered by
+				<a href="https://github.com/antlr/antlr4" target="_blank" class="underline">ANTLR</a> and
+				<a href="https://github.com/jcubic/lips" target="_blank" class="underline">LIPS</a>.</small
+			>
+		</div>
+		<div class="flex w-full items-center gap-4">
+			<span>Examples: </span>
+			<div class="flex flex-grow items-center gap-5">
+				<button
+					type="button"
+					class="variant-filled btn btn-sm"
+					on:click={() => setInput('jadi plis buka plis tambah 2 2 plis tutup')}>Addition</button
+				>
+				<button
+					type="button"
+					class="variant-filled btn btn-sm"
+					on:click={() => setInput('jadi plis buka plis kurang 10 5 plis tutup')}
+					>Subtraction</button
+				>
+				<button
+					type="button"
+					class="variant-filled btn btn-sm"
+					on:click={() => setInput('jadi plis buka plis kali 6 6 plis tutup')}
+					>Multiplication</button
+				>
+				<button
+					type="button"
+					class="variant-filled btn btn-sm"
+					on:click={() => setInput('jadi plis buka plis bagi 10 5 plis tutup')}>Division</button
+				>
+				<button type="button" class="variant-filled btn btn-sm" on:click={() => setInput(init)}
+					>Composite</button
+				>
+			</div>
 		</div>
 		<div class="flex h-[500px] w-full items-stretch justify-stretch">
 			<div id="input" class="flex-grow">
@@ -88,7 +131,7 @@
 						input = e.target.value;
 					}, 300)}
 					class="textarea h-full resize-none p-4"
-					placeholder="jadi gini..."
+					placeholder="jadi..."
 					on:keydown={(e) => {
 						if (e.key !== 'Tab') {
 							return;
@@ -100,7 +143,7 @@
 						e.target.value = text.substring(0, start) + '\t' + text.substring(end);
 						e.target.selectionStart = e.target.selectionEnd = start + 1;
 					}}
-					value={init}
+					bind:value={rawInput}
 				/>
 			</div>
 			<span class="divider-vertical mx-8 h-full border-2" />
